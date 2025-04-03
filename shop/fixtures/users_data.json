@@ -1,0 +1,107 @@
+[
+  {
+    "model": "shop.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$8KHgzxnrXwEFGDcpzQkDJw$3X3+n8MqQxbw5TL3Z5Nh+jVjQ2nE+mXuFLNM1+ZRWT4=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "Administrador",
+      "last_name": "Principal",
+      "email": "admin@cofeshop.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-06-01T08:00:00Z",
+      "user_type": "admin",
+      "phone": "+34600000000",
+      "address": "Calle Principal 1, Madrid",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "shop.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$8KHgzxnrXwEFGDcpzQkDJw$3X3+n8MqQxbw5TL3Z5Nh+jVjQ2nE+mXuFLNM1+ZRWT4=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "empleado1",
+      "first_name": "Juan",
+      "last_name": "Pérez",
+      "email": "juan@cofeshop.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-06-01T09:00:00Z",
+      "user_type": "employee",
+      "phone": "+34600000001",
+      "address": "Calle Secundaria 2, Madrid",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "shop.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$8KHgzxnrXwEFGDcpzQkDJw$3X3+n8MqQxbw5TL3Z5Nh+jVjQ2nE+mXuFLNM1+ZRWT4=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "empleado2",
+      "first_name": "María",
+      "last_name": "González",
+      "email": "maria@cofeshop.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-06-01T10:00:00Z",
+      "user_type": "employee",
+      "phone": "+34600000002",
+      "address": "Avenida Principal 3, Barcelona",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "shop.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$8KHgzxnrXwEFGDcpzQkDJw$3X3+n8MqQxbw5TL3Z5Nh+jVjQ2nE+mXuFLNM1+ZRWT4=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "cliente1",
+      "first_name": "Carlos",
+      "last_name": "Rodríguez",
+      "email": "carlos@ejemplo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-06-02T08:00:00Z",
+      "user_type": "customer",
+      "phone": "+34600000003",
+      "address": "Calle Cliente 1, Valencia",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "shop.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$8KHgzxnrXwEFGDcpzQkDJw$3X3+n8MqQxbw5TL3Z5Nh+jVjQ2nE+mXuFLNM1+ZRWT4=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "cliente2",
+      "first_name": "Laura",
+      "last_name": "Martínez",
+      "email": "laura@ejemplo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-06-02T09:00:00Z",
+      "user_type": "customer",
+      "phone": "+34600000004",
+      "address": "Avenida Cliente 2, Sevilla",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

@@ -1,0 +1,59 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Bienvenido a CoffeeShop</h1>
+    <p class="lead">Descubre nuestra selección de cafés premium y productos de la mejor calidad.</p>
+    <hr class="my-4">
+    <p>Explora nuestro catálogo y encuentra tu café favorito.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'product_list' %}" role="button">Ver Productos</a>
+</div>
+
+<h2 class="mt-5 mb-4">Categorías</h2>
+<div class="row">
+    {% for category in categories %}
+    <div class="col-md-4 mb-4">
+        <div class="card product-card">
+            <div class="card-body">
+                <h5 class="card-title">{{ category.name }}</h5>
+                <p class="card-text">{{ category.description|truncatechars:100 }}</p>
+                <a href="{% url 'product_list_by_category' category.id %}" class="btn btn-primary">Ver Productos</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>No hay categorías disponibles.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<h2 class="mt-5 mb-4">Productos Destacados</h2>
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-3 mb-4">
+        <div class="card product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+            {% else %}
+            <div class="bg-light text-center p-4">
+                <span class="text-muted">Sin imagen</span>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|truncatechars:50 }}</p>
+                <p class="card-text"><strong>${{ product.price }}</strong></p>
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Ver Detalles</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>No hay productos disponibles.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

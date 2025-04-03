@@ -1,0 +1,134 @@
+[
+  {
+    "model": "shop.category",
+    "pk": 1,
+    "fields": {
+      "name": "Café",
+      "description": "Diferentes tipos de café de alta calidad",
+      "created_at": "2023-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "shop.category",
+    "pk": 2,
+    "fields": {
+      "name": "Postres",
+      "description": "Deliciosos postres para acompañar tu café",
+      "created_at": "2023-06-01T10:05:00Z"
+    }
+  },
+  {
+    "model": "shop.category",
+    "pk": 3,
+    "fields": {
+      "name": "Accesorios",
+      "description": "Accesorios para preparar y disfrutar tu café",
+      "created_at": "2023-06-01T10:10:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 1,
+    "fields": {
+      "name": "Café Colombiano",
+      "description": "Café de origen colombiano con notas de chocolate y caramelo",
+      "price": "12.99",
+      "category": 1,
+      "image": "products/cafe_colombiano.jpg",
+      "stock": 50,
+      "available": true,
+      "created_at": "2023-06-02T09:00:00Z",
+      "updated_at": "2023-06-02T09:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 2,
+    "fields": {
+      "name": "Café Etíope",
+      "description": "Café de origen etíope con notas florales y afrutadas",
+      "price": "14.99",
+      "category": 1,
+      "image": "products/cafe_etiope.jpg",
+      "stock": 30,
+      "available": true,
+      "created_at": "2023-06-02T09:15:00Z",
+      "updated_at": "2023-06-02T09:15:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 3,
+    "fields": {
+      "name": "Café Brasileño",
+      "description": "Café de origen brasileño con notas de nuez y chocolate",
+      "price": "11.99",
+      "category": 1,
+      "image": "products/cafe_brasileno.jpg",
+      "stock": 45,
+      "available": true,
+      "created_at": "2023-06-02T09:30:00Z",
+      "updated_at": "2023-06-02T09:30:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 4,
+    "fields": {
+      "name": "Cheesecake",
+      "description": "Delicioso cheesecake con base de galleta y cobertura de frutos rojos",
+      "price": "5.99",
+      "category": 2,
+      "image": "products/cheesecake.jpg",
+      "stock": 20,
+      "available": true,
+      "created_at": "2023-06-02T10:00:00Z",
+      "updated_at": "2023-06-02T10:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 5,
+    "fields": {
+      "name": "Brownie de Chocolate",
+      "description": "Brownie casero con trozos de chocolate y nueces",
+      "price": "4.50",
+      "category": 2,
+      "image": "products/brownie.jpg",
+      "stock": 25,
+      "available": true,
+      "created_at": "2023-06-02T10:15:00Z",
+      "updated_at": "2023-06-02T10:15:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 6,
+    "fields": {
+      "name": "Cafetera Francesa",
+      "description": "Cafetera de prensa francesa para preparar café de manera tradicional",
+      "price": "24.99",
+      "category": 3,
+      "image": "products/cafetera_francesa.jpg",
+      "stock": 15,
+      "available": true,
+      "created_at": "2023-06-02T11:00:00Z",
+      "updated_at": "2023-06-02T11:00:00Z"
+    }
+  },
+  {
+    "model": "shop.product",
+    "pk": 7,
+    "fields": {
+      "name": "Molinillo de Café",
+      "description": "Molinillo manual para café con ajuste de molienda",
+      "price": "19.99",
+      "category": 3,
+      "image": "products/molinillo.jpg",
+      "stock": 10,
+      "available": true,
+      "created_at": "2023-06-02T11:15:00Z",
+      "updated_at": "2023-06-02T11:15:00Z"
+    }
+  }
+]

@@ -1,0 +1,70 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Categorías</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'product_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">
+                    Todas las categorías
+                </a>
+                {% for c in categories %}
+                <a href="{% url 'product_list_by_category' c.id %}" class="list-group-item list-group-item-action {% if category.id == c.id %}active{% endif %}">
+                    {{ c.name }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <h2>
+            {% if category %}
+                {{ category.name }}
+            {% else %}
+                Todos los Productos
+            {% endif %}
+        </h2>
+        
+        {% if query %}
+        <p>Resultados para: "{{ query }}"</p>
+        {% endif %}
+        
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="bg-light text-center p-4">
+                        <span class="text-muted">Sin imagen</span>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description|truncatechars:50 }}</p>
+                        <p class="card-text"><strong>${{ product.price }}</strong></p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Ver Detalles</a>
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-outline-primary">🛒 Añadir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No hay productos disponibles en esta categoría.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
