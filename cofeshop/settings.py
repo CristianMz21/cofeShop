@@ -137,3 +137,10 @@ AUTH_USER_MODEL = 'shop.User'
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Authentication settings
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+# URL para redirigir a usuarios que intentan acceder a áreas administrativas sin permisos
+ADMIN_LOGIN_URL = 'admin_login'  # Mantenemos el mismo nombre de ruta aunque la URL haya cambiado de 'admin/' a 'manage/'

@@ -13,6 +13,7 @@ class User(AbstractUser):
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='customer')
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
     
     groups = models.ManyToManyField(
         Group,
@@ -80,11 +81,19 @@ class Order(models.Model):
     phone = models.CharField(max_length=15)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    notes = models.TextField(blank=True, null=True, help_text='Notas internas para administradores')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return f'Orden #{self.id} - {self.user.username}'
+        
+    def get_previous_status(self):
+        status_order = ['pending', 'processing', 'shipped', 'delivered']
+        current_index = status_order.index(self.status) if self.status in status_order else -1
+        if current_index > 0:
+            return status_order[current_index - 1]
+        return 'pending'
 
 # Modelo de Detalle de Orden
 class OrderItem(models.Model):

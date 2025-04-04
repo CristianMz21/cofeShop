@@ -36,6 +36,12 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'full_name', 'total_amount', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('full_name', 'email')
+    readonly_fields = ('created_at', 'updated_at')
+    fieldsets = (
+        ('Información del Cliente', {'fields': ('user', 'full_name', 'email', 'phone', 'address')}),
+        ('Información del Pedido', {'fields': ('total_amount', 'status', 'notes')}),
+        ('Fechas', {'fields': ('created_at', 'updated_at')}),
+    )
     inlines = [OrderItemInline]
 
 @admin.register(Cart)

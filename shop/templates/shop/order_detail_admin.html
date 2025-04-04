@@ -1,0 +1,155 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Detalle de Pedido #{{ order.id }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Detalle de Pedido #{{ order.id }}</h1>
+        <a href="{% url 'order_management' %}" class="btn btn-outline-secondary">Volver a la lista</a>
+    </div>
+
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Información del Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6>Información de Contacto</h6>
+                            <p>
+                                <strong>Cliente:</strong> {{ order.user.username }}<br>
+                                <strong>Nombre:</strong> {{ order.full_name }}<br>
+                                <strong>Email:</strong> {{ order.email }}<br>
+                                <strong>Teléfono:</strong> {{ order.phone }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Información de Envío</h6>
+                            <p>
+                                <strong>Dirección:</strong> {{ order.address }}<br>
+                                <strong>Fecha del pedido:</strong> {{ order.created_at|date:"d/m/Y H:i" }}<br>
+                                <strong>Última actualización:</strong> {{ order.updated_at|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <h6>Productos</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                    <th>Stock Actual</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>${{ item.price }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.product.stock }}</td>
+                                    <td>${{ item.get_total_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                    <td><strong>${{ order.total_amount }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Gestionar Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'update_order_status' order.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Estado Actual: <span class="badge {% if order.status == 'pending' %}bg-warning text-dark{% elif order.status == 'processing' %}bg-info text-dark{% elif order.status == 'shipped' %}bg-primary{% elif order.status == 'delivered' %}bg-success{% elif order.status == 'cancelled' %}bg-danger{% endif %}">{{ order.get_status_display }}</span></label>
+                            <div class="d-flex gap-2 mt-2">
+                                {% if order.status != 'pending' %}
+                                <button type="submit" name="status" value="{{ order.get_previous_status }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Estado Anterior
+                                </button>
+                                {% endif %}
+                                
+                                {% if order.status == 'pending' %}
+                                <button type="submit" name="status" value="processing" class="btn btn-info">
+                                    Procesar Pedido <i class="bi bi-arrow-right"></i>
+                                </button>
+                                {% elif order.status == 'processing' %}
+                                <button type="submit" name="status" value="shipped" class="btn btn-primary">
+                                    Marcar como Enviado <i class="bi bi-arrow-right"></i>
+                                </button>
+                                {% elif order.status == 'shipped' %}
+                                <button type="submit" name="status" value="delivered" class="btn btn-success">
+                                    Marcar como Entregado <i class="bi bi-arrow-right"></i>
+                                </button>
+                                {% endif %}
+                                
+                                {% if order.status != 'cancelled' and order.status != 'delivered' %}
+                                <button type="submit" name="status" value="cancelled" class="btn btn-outline-danger">
+                                    <i class="bi bi-x-circle"></i> Cancelar Pedido
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notas Internas</label>
+                            <textarea name="notes" id="notes" class="form-control" rows="3">{{ order.notes }}</textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Gestión de Inventario</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'update_inventory' order.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="update_stock" id="update_stock" value="1">
+                                <label class="form-check-label" for="update_stock">
+                                    Actualizar inventario automáticamente
+                                </label>
+                                <div class="form-text">Al marcar esta opción, se reducirá el stock de los productos según las cantidades del pedido.</div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">Procesar Inventario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

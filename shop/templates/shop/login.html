@@ -1,0 +1,57 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
+                
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <p>Tu nombre de usuario y contraseña no coinciden. Por favor, inténtalo de nuevo.</p>
+                </div>
+                {% endif %}
+                
+                {% if next %}
+                    {% if user.is_authenticated %}
+                    <div class="alert alert-warning">
+                        <p>Tu cuenta no tiene acceso a esta página. Para continuar, inicia sesión con una cuenta que tenga acceso.</p>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <p>Por favor, inicia sesión para ver esta página.</p>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Nombre de usuario</label>
+                        <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">Contraseña</label>
+                        <input type="password" name="password" id="id_password" class="form-control" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" name="remember" id="id_remember" class="form-check-input">
+                        <label for="id_remember" class="form-check-label">Recordarme</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                    </div>
+                    <input type="hidden" name="next" value="{{ next }}">
+                </form>
+                
+                <div class="mt-3 text-center">
+                    <p>¿No tienes una cuenta? <a href="{% url 'register' %}">Regístrate aquí</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

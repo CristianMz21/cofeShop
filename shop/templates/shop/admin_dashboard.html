@@ -1,0 +1,58 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Panel de Administración</h1>
+    
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Gestión de Pedidos</h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p>Administra todos los pedidos de la tienda. Visualiza, actualiza estados y gestiona el inventario relacionado.</p>
+                    <p><strong>Funcionalidades:</strong></p>
+                    <ul>
+                        <li>Ver todos los pedidos</li>
+                        <li>Filtrar por estado y fecha</li>
+                        <li>Actualizar estado de pedidos</li>
+                        <li>Gestionar inventario relacionado</li>
+                    </ul>
+                    <a href="{% url 'order_management' %}" class="btn btn-primary mt-auto">Ir a Gestión de Pedidos</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Gestión de Inventario</h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p>Controla el inventario de productos. Actualiza stock, añade nuevos productos y gestiona categorías.</p>
+                    <p><strong>Funcionalidades:</strong></p>
+                    <ul>
+                        <li>Ver inventario actual</li>
+                        <li>Añadir stock a productos existentes</li>
+                        <li>Monitorear productos con bajo stock</li>
+                    </ul>
+                    <a href="{% url 'inventory_management' %}" class="btn btn-primary mt-auto">Ir a Gestión de Inventario</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <h5>Nota Importante</h5>
+                <p>Para acceder a las funciones administrativas, utiliza los enlaces en este panel o el menú de administración en la barra lateral.</p>
+                <p>No utilices la ruta <code>/admin/orders/</code> directamente en el navegador, ya que esta ruta está configurada como parte de la aplicación personalizada y no como parte del panel de administración nativo de Django.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
