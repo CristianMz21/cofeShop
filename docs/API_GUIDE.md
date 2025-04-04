@@ -284,11 +284,24 @@ Si deseas integrar con la API de CoffeeShop, ten en cuenta las siguientes consid
 2. Para integraciones más avanzadas, se recomienda implementar una API REST dedicada utilizando Django REST Framework.
 3. Las rutas pueden cambiar en futuras versiones, por lo que se recomienda verificar la documentación actualizada.
 
+## API REST
+
+Además de los endpoints tradicionales, CoffeeShop ahora ofrece una API REST completa implementada con Django REST Framework. Todos los endpoints de la API REST están disponibles bajo el prefijo `/api/`.
+
+Para obtener información detallada sobre los endpoints de la API REST, consulte el documento [API_GUIDE_REST.md](API_GUIDE_REST.md).
+
+### Endpoints Principales de la API REST
+
+- `/api/categories/` - Gestión de categorías
+- `/api/products/` - Gestión de productos
+- `/api/carts/` - Gestión de carritos de compra
+- `/api/orders/` - Gestión de pedidos
+
 ## Desarrollo Futuro
 
 En futuras versiones, se planea implementar:
 
-1. API REST completa con respuestas en formato JSON
-2. Autenticación mediante tokens
-3. Endpoints adicionales para gestión de usuarios y categorías
+1. Autenticación mediante tokens JWT para la API REST
+2. Paginación para listas grandes de recursos
+3. Filtros adicionales para búsquedas más específicas
 4. Documentación interactiva con Swagger/OpenAPI
