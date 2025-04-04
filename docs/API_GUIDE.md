@@ -37,6 +37,62 @@ POST /manage/inventory/add-stock/
 **Respuesta:**
 Redirección a la página de gestión de inventario con mensaje de confirmación
 
+### Usuarios
+
+#### Registro de Usuarios
+
+```
+POST /register/
+```
+
+**Parámetros:**
+- `username`: Nombre de usuario
+- `email`: Correo electrónico
+- `password1`: Contraseña
+- `password2`: Confirmación de contraseña
+- `user_type`: Tipo de usuario (customer/employee/admin)
+
+**Respuesta:**
+Redirección a la página principal tras registro exitoso
+
+### Carrito de Compras
+
+#### Añadir Producto
+
+```
+POST /cart/add/<product_id>/
+```
+
+**Requisitos:**
+- Autenticación como cliente
+
+**Respuesta:**
+Redirección al carrito
+
+#### Ver Carrito
+
+```
+GET /cart/view/
+```
+
+**Requisitos:**
+- Autenticación como cliente
+
+**Respuesta:**
+Página HTML con los productos en el carrito
+
+#### Eliminar Producto
+
+```
+POST /cart/remove/<product_id>/
+```
+
+**Requisitos:**
+- Autenticación como cliente
+
+**Respuesta:**
+Redirección al carrito
+
 ```
 POST /manage/orders/{order_id}/inventory/
 ```
