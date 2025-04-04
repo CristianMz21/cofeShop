@@ -12,6 +12,44 @@ Para acceder a los endpoints protegidos, es necesario estar autenticado. La aute
 
 ## Endpoints Disponibles
 
+### Administración
+
+#### Gestión de Inventario
+
+```
+GET /manage/inventory/
+```
+
+**Requisitos:**
+- Autenticación como administrador
+
+**Respuesta:**
+Página HTML con el estado actual del inventario
+
+```
+POST /manage/inventory/add-stock/
+```
+
+**Parámetros:**
+- `product_id`: ID del producto
+- `quantity`: Cantidad a añadir
+
+**Respuesta:**
+Redirección a la página de gestión de inventario con mensaje de confirmación
+
+```
+POST /manage/orders/{order_id}/inventory/
+```
+
+**Parámetros:**
+- `order_id`: ID de la orden
+- `action`: 'add' o 'remove'
+- `product_id`: ID del producto
+- `quantity`: Cantidad a modificar
+
+**Respuesta:**
+Redirección a la página de detalle de orden con mensaje de confirmación
+
 ### Productos
 
 #### Listar Productos

@@ -20,6 +20,13 @@ Extiende el modelo de usuario de Django para incluir información adicional:
 - **Campos adicionales**: Teléfono, Dirección
 - **Métodos**: `is_admin()`, `is_employee()`, `is_customer()`
 
+### Inventario (Inventory)
+
+Gestiona el stock de productos:
+
+- **Campos**: Producto, Cantidad disponible, Cantidad mínima, Última actualización
+- **Métodos**: `check_stock()`, `update_stock()`, `get_low_stock_items()`
+
 ### Categoría (Category)
 
 Permite organizar los productos en grupos lógicos:

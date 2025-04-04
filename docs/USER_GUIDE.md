@@ -28,6 +28,26 @@ La aplicación CoffeeShop tiene tres tipos de usuarios, cada uno con diferentes 
 
 ### Navegación por el Catálogo
 
+## Guía para Administradores
+
+### Gestión de Inventario
+
+1. **Ver estado de inventario**:
+   - Accede a la sección "Administración" > "Inventario"
+   - Verás una lista de todos los productos con su stock actual
+
+2. **Añadir stock**:
+   - Haz clic en "Añadir Stock"
+   - Selecciona el producto y especifica la cantidad
+   - Confirma la operación
+
+3. **Actualizar inventario desde órdenes**:
+   - En el detalle de una orden, haz clic en "Gestionar Inventario"
+   - Selecciona la acción (añadir/remover) y la cantidad
+   - Confirma los cambios
+
+### Navegación por el Catálogo
+
 1. **Ver todos los productos**: Accede a la sección "Productos" desde el menú principal
 2. **Filtrar por categoría**: Selecciona una categoría en el menú lateral
 3. **Buscar productos**: Utiliza la barra de búsqueda en la parte superior
