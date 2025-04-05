@@ -10,11 +10,13 @@ CoffeeShop es una aplicación web desarrollada con Django que permite gestionar 
 - **Proceso de checkout**: Flujo completo para finalizar compras
 - **Historial de pedidos**: Los usuarios pueden ver sus pedidos anteriores
 - **Panel de administración**: Interfaz para gestionar todos los aspectos de la tienda
+- **API REST**: Interfaz programática completa para integración con otros sistemas
 
 ## Requisitos
 
 - Python 3.8 o superior
 - Django 5.2
+- Django REST Framework
 - PostgreSQL
 - Otras dependencias listadas en requirements.txt
 
@@ -86,6 +88,10 @@ CoffeeShop es una aplicación web desarrollada con Django que permite gestionar 
   - `views.py`: Vistas para manejar las solicitudes HTTP
   - `urls.py`: Configuración de URLs de la aplicación
   - `admin.py`: Configuración del panel de administración
+  - `api/`: Implementación de la API REST
+    - `views.py`: Vistas de la API
+    - `serializers.py`: Serializadores para convertir modelos a JSON
+    - `urls.py`: Configuración de URLs de la API
   - `fixtures/`: Datos iniciales para cargar en la base de datos
 
 ## Usuarios Predefinidos
@@ -102,6 +108,8 @@ La aplicación incluye varios usuarios predefinidos para pruebas:
 
 ## Endpoints Principales
 
+### Aplicación Web
+
 - `/`: Página principal
 - `/products/`: Lista de productos
 - `/category/<id>/`: Productos filtrados por categoría
@@ -110,6 +118,55 @@ La aplicación incluye varios usuarios predefinidos para pruebas:
 - `/checkout/`: Proceso de pago
 - `/orders/`: Historial de pedidos
 - `/admin/`: Panel de administración
+
+### API REST
+
+Todos los endpoints de la API REST están disponibles bajo el prefijo `/api/`:
+
+- `/api/categories/`: Gestión de categorías
+- `/api/products/`: Gestión de productos
+- `/api/carts/`: Gestión de carritos de compra
+  - `/api/carts/my_cart/`: Obtener el carrito del usuario actual
+  - `/api/carts/add_item/`: Añadir un producto al carrito
+  - `/api/carts/remove_item/`: Eliminar un producto del carrito
+- `/api/orders/`: Gestión de pedidos
+  - `/api/orders/checkout/`: Crear un nuevo pedido
+  - `/api/orders/{id}/update_status/`: Actualizar el estado de un pedido
+- `/api/login/`: Autenticación y obtención de token
+
+Para más detalles sobre la API, consulte la documentación en la carpeta `docs/`:
+- [Guía de API General](docs/API_GUIDE.md)
+- [Guía de API REST](docs/API_GUIDE_REST.md)
+
+## Autenticación de API
+
+La API proporciona autenticación mediante tokens. Para obtener un token:
+
+```
+POST /api/login/
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+```
+
+Para usar el token, incluirlo en el encabezado de las solicitudes:
+```
+Authorization: Token tu_token_de_autenticación
+```
+
+## Scripts de Ejemplo
+
+El repositorio incluye scripts de ejemplo para interactuar con la API:
+
+- `test_product_api.py`: Demuestra cómo crear un nuevo producto a través de la API
+
+Para ejecutar el script:
+```
+python test_product_api.py
+```
 
 ## Panel de Administración
 
@@ -136,6 +193,32 @@ python manage.py createsuperuser
 ```
 python manage.py test shop
 ```
+
+### Generar tokens de autenticación
+
+Para generar un token para un usuario desde el shell de Django:
+
+```python
+python manage.py shell
+
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+user = User.objects.get(username='usuario')
+token, created = Token.objects.get_or_create(user=user)
+print(f"Token: {token.key}")
+```
+
+## Documentación
+
+Para obtener más información sobre el funcionamiento del sistema, consulte la documentación en la carpeta `docs/`:
+
+- [Documentación General](docs/DOCUMENTATION.md)
+- [Guía de Instalación](docs/INSTALLATION.md)
+- [Guía de Usuario](docs/USER_GUIDE.md)
+- [Guía de API](docs/API_GUIDE.md)
+- [Guía de API REST](docs/API_GUIDE_REST.md)
 
 ## Licencia
 

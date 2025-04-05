@@ -1,147 +1,333 @@
-# Documentación Técnica de CoffeeShop
+# Documentación del Sistema CoffeeShop
 
-Este documento proporciona información técnica detallada sobre la aplicación CoffeeShop, su arquitectura, modelos de datos y funcionalidades principales.
+## Introducción
 
-## Arquitectura del Sistema
+CoffeeShop es una aplicación web desarrollada con Django para gestionar una tienda de café. Esta documentación proporciona información sobre la arquitectura del sistema, características principales, y cómo utilizar y mantener la aplicación.
 
-CoffeeShop está desarrollado utilizando el framework Django, siguiendo el patrón de arquitectura Modelo-Vista-Controlador (MVC), que en Django se implementa como Modelo-Vista-Template (MVT):
+## Estructura del proyecto
 
-- **Modelos**: Definen la estructura de datos y la lógica de negocio
-- **Vistas**: Manejan la lógica de presentación y procesamiento de solicitudes
-- **Templates**: Definen cómo se presenta la información al usuario
+```
+cofeshop/
+├── cofeshop/           # Configuración principal del proyecto
+├── shop/               # Aplicación principal
+│   ├── api/            # API REST
+│   ├── fixtures/       # Datos iniciales
+│   ├── migrations/     # Migraciones de la base de datos
+│   ├── static/         # Archivos estáticos
+│   ├── templates/      # Plantillas HTML
+│   ├── tests/          # Pruebas unitarias
+│   ├── models.py       # Modelos de datos
+│   ├── views.py        # Vistas regulares
+│   ├── views_admin.py  # Vistas administrativas
+│   ├── auth_views.py   # Vistas de autenticación
+│   └── urls.py         # Configuración de URLs
+├── media/              # Archivos cargados por usuarios
+├── stactic/            # Archivos estáticos globales
+├── docs/               # Documentación
+├── manage.py           # Script de gestión de Django
+├── test_product_api.py # Script de prueba para la API
+└── .env                # Variables de entorno
+```
 
-## Modelos de Datos
+## Modelos de datos
 
-### Usuario (User)
+### Usuarios
 
-Extiende el modelo de usuario de Django para incluir información adicional:
+- **User**: Extensión del modelo de usuario de Django con campos adicionales:
+  - `user_type`: Tipo de usuario (customer, employee, admin)
+  - `phone`: Número telefónico
+  - `address`: Dirección
+  - `city`: Ciudad
 
-- **Tipos de usuario**: Administrador, Empleado, Cliente
-- **Campos adicionales**: Teléfono, Dirección
-- **Métodos**: `is_admin()`, `is_employee()`, `is_customer()`
+### Productos
 
-### Inventario (Inventory)
+- **Category**: Categorías de productos
+  - `name`: Nombre de la categoría
+  - `description`: Descripción
+  - `created_at`: Fecha de creación
 
-Gestiona el stock de productos:
+- **Product**: Productos disponibles
+  - `name`: Nombre del producto
+  - `description`: Descripción
+  - `price`: Precio
+  - `category`: Categoría (ForeignKey a Category)
+  - `image`: Imagen del producto
+  - `stock`: Cantidad en inventario
+  - `available`: Indica si está disponible
+  - `created_at`: Fecha de creación
+  - `updated_at`: Fecha de actualización
 
-- **Campos**: Producto, Cantidad disponible, Cantidad mínima, Última actualización
-- **Métodos**: `check_stock()`, `update_stock()`, `get_low_stock_items()`
+### Carrito y Pedidos
 
-### Categoría (Category)
+- **Cart**: Carrito de compras
+  - `user`: Usuario propietario
+  - `created_at`: Fecha de creación
+  - `updated_at`: Fecha de actualización
+  
+- **CartItem**: Elementos en el carrito
+  - `cart`: Carrito al que pertenece
+  - `product`: Producto
+  - `quantity`: Cantidad
 
-Permite organizar los productos en grupos lógicos:
+- **Order**: Pedidos realizados
+  - `user`: Usuario que realizó el pedido
+  - `full_name`: Nombre completo
+  - `email`: Correo electrónico
+  - `address`: Dirección de envío
+  - `phone`: Teléfono
+  - `total_amount`: Monto total
+  - `status`: Estado del pedido (pending, processing, shipped, delivered, cancelled)
+  - `notes`: Notas adicionales
+  - `created_at`: Fecha de creación
+  - `updated_at`: Fecha de actualización
 
-- **Campos**: Nombre, Descripción, Fecha de creación
+- **OrderItem**: Elementos de un pedido
+  - `order`: Pedido al que pertenece
+  - `product`: Producto
+  - `price`: Precio al momento de la compra
+  - `quantity`: Cantidad
 
-### Producto (Product)
+## API REST
 
-Representa los artículos disponibles para la venta:
+La aplicación incluye una API REST completa que permite integrar CoffeeShop con otros sistemas o desarrollar aplicaciones móviles. La API está implementada utilizando Django REST Framework.
 
-- **Campos**: Nombre, Descripción, Precio, Categoría, Imagen, Stock, Disponibilidad
-- **Relaciones**: Pertenece a una Categoría
+### Documentación de la API
 
-### Orden/Pedido (Order)
+La documentación completa de la API está disponible en:
+- [Guía de API General](API_GUIDE.md)
+- [Guía de API REST](API_GUIDE_REST.md)
 
-Registra las compras realizadas por los usuarios:
+### Autenticación de la API
 
-- **Estados**: Pendiente, En Proceso, Enviado, Entregado, Cancelado
-- **Campos**: Usuario, Nombre completo, Email, Dirección, Teléfono, Monto total, Estado
-- **Relaciones**: Pertenece a un Usuario, contiene múltiples OrderItem
+La API proporciona varios métodos de autenticación:
 
-### Detalle de Orden (OrderItem)
+#### Autenticación por Token
 
-Representa cada producto incluido en una orden:
+Para acceder a los endpoints protegidos, se puede utilizar autenticación por token. Los tokens se generan por usuario y no caducan a menos que se regeneren manualmente.
 
-- **Campos**: Orden, Producto, Precio, Cantidad
-- **Métodos**: `get_total_price()`
+Para obtener un token:
 
-### Carrito de Compras (Cart)
+```
+GET/POST /api/login/
+```
 
-Almacena temporalmente los productos que un usuario desea comprar:
+**Métodos disponibles:**
+- **POST**: Enviar credenciales en el cuerpo de la solicitud
+  ```json
+  {
+    "username": "usuario",
+    "password": "contraseña"
+  }
+  ```
+- **GET**: Enviar credenciales como parámetros de consulta
+  ```
+  /api/login/?username=usuario&password=contraseña
+  ```
 
-- **Campos**: Usuario, Fechas de creación y actualización
-- **Métodos**: `get_total_price()`
+**Respuesta:**
+```json
+{
+  "token": "tu_token_de_autenticación"
+}
+```
 
-### Item del Carrito (CartItem)
+**Uso del token:**
+Incluir el token en el encabezado de las solicitudes:
+```
+Authorization: Token tu_token_de_autenticación
+```
 
-Representa cada producto añadido al carrito:
+#### Autenticación por Sesión
 
-- **Campos**: Carrito, Producto, Cantidad
-- **Métodos**: `get_total_price()`
+También se admite la autenticación por sesión de Django para aplicaciones web que utilizan la API.
 
-## Flujos Principales
+### Permisos de la API
 
-### Proceso de Compra
+La API implementa varios niveles de permisos:
 
-1. **Navegación del catálogo**: El usuario navega por las categorías y productos
-2. **Añadir al carrito**: El usuario añade productos a su carrito
-3. **Gestión del carrito**: El usuario puede modificar cantidades o eliminar productos
-4. **Checkout**: El usuario proporciona información de envío y confirma la compra
-5. **Confirmación**: Se crea una orden y se vacía el carrito
+- **IsAdminOrReadOnly**: Permite acceso de lectura a todos los usuarios, pero solo administradores pueden crear, actualizar o eliminar recursos.
+- **IsOwnerOrAdmin**: Permite a los usuarios acceder solo a sus propios recursos, mientras que los administradores pueden acceder a todos.
 
-### Gestión de Usuarios
+### Ejemplos de uso de la API
 
-- **Registro**: Los usuarios pueden crear una cuenta como cliente
-- **Autenticación**: Sistema de login/logout
-- **Perfiles**: Los usuarios pueden ver y editar su información personal
-- **Historial**: Los usuarios pueden ver sus pedidos anteriores
+#### Scripts de prueba
 
-## Panel de Administración
+El proyecto incluye scripts de ejemplo para probar la API. Por ejemplo, el script `test_product_api.py` demuestra cómo crear un nuevo producto a través de la API:
 
-El panel de administración de Django está personalizado para gestionar todos los aspectos de la tienda:
+```python
+import requests
+import json
 
-- **Gestión de usuarios**: Crear, editar y desactivar usuarios
-- **Gestión de productos**: Añadir, editar y eliminar productos y categorías
-- **Gestión de pedidos**: Ver, actualizar estado y gestionar pedidos
+# Data para el nuevo producto
+product_data = {
+    "name": "Té Verde Matcha",
+    "description": "Té verde japonés premium en polvo para ceremonias",
+    "price": "18.50",
+    "category_id": 4,
+    "image": "http://127.0.0.1:8000/media/products/te_verde.jpg",
+    "stock": 40,
+    "available": True
+}
 
-## Configuración del Sistema
+# Realizar la solicitud API para crear el producto
+response = requests.post('http://127.0.0.1:8000/api/products/', 
+                        json=product_data)
 
-### Base de Datos
+# Imprimir los resultados
+print(f'Product Creation Status Code: {response.status_code}')
+try:
+    print(json.dumps(response.json(), indent=2))
+except:
+    print(response.text) 
+```
 
-La aplicación utiliza PostgreSQL como sistema de gestión de base de datos:
+Para ejecutar este script:
 
-- **Configuración**: Definida en `settings.py` y variables de entorno
-- **Migraciones**: Gestionadas por Django ORM
+```bash
+python test_product_api.py
+```
 
-### Archivos Estáticos y Media
+**Nota**: Este script de ejemplo está configurado para ejecutarse sin autenticación. En un entorno de producción, es necesario modificarlo para incluir el token de autenticación como se muestra a continuación.
 
-- **Estáticos**: CSS, JavaScript y otros recursos estáticos
-- **Media**: Imágenes de productos subidas por los administradores
+##### Autenticación en scripts
 
-### Variables de Entorno
+Para usar endpoints protegidos, es necesario primero obtener un token. Modifique sus scripts para incluir la autenticación:
 
-La aplicación utiliza variables de entorno para configuración sensible:
+```python
+# Obtener token
+auth_response = requests.post('http://127.0.0.1:8000/api/login/', 
+                             json={"username": "admin", "password": "adminpassword"})
+token = auth_response.json()['token']
 
-- **SECRET_KEY**: Clave secreta de Django
-- **DEBUG**: Modo de depuración
-- **Configuración de BD**: Credenciales y parámetros de conexión
+# Usar token en solicitudes
+headers = {'Authorization': f'Token {token}'}
+response = requests.post('http://127.0.0.1:8000/api/products/', 
+                        json=product_data,
+                        headers=headers)
+```
 
-## Datos Iniciales (Fixtures)
+#### Creación de scripts personalizados
 
-La aplicación incluye datos iniciales para facilitar el desarrollo y pruebas:
+Puede crear sus propios scripts para interactuar con la API. Por ejemplo, para crear un script que obtenga la lista de todos los productos:
 
-- **users_data.json**: Usuarios predefinidos (admin, empleados, clientes)
-- **initial_data.json**: Categorías y productos de ejemplo
+```python
+import requests
+import json
 
-## Seguridad
+# Obtener token (si es necesario para su entorno)
+auth_response = requests.post('http://127.0.0.1:8000/api/login/', 
+                             json={"username": "admin", "password": "adminpassword"})
+token = auth_response.json()['token']
+headers = {'Authorization': f'Token {token}'}
 
-- **Autenticación**: Sistema de autenticación de Django
-- **Autorización**: Permisos basados en tipo de usuario
-- **CSRF Protection**: Protección contra falsificación de solicitudes entre sitios
-- **Contraseñas**: Almacenadas con hash seguro (PBKDF2 SHA256)
+# Obtener lista de productos
+response = requests.get('http://127.0.0.1:8000/api/products/', headers=headers)
 
-## Extensibilidad
+# Imprimir resultados
+print(f'Status Code: {response.status_code}')
+print(json.dumps(response.json(), indent=2))
+```
 
-La aplicación está diseñada para ser fácilmente extensible:
+## Flujo de trabajo del sistema
 
-- **Nuevos tipos de productos**: Añadiendo categorías
-- **Métodos de pago**: Preparado para integrar pasarelas de pago
-- **Internacionalización**: Soporte para múltiples idiomas mediante el sistema i18n de Django
+### Flujo de compra para clientes
 
-## Consideraciones para Producción
+1. El cliente navega por los productos y categorías
+2. Añade productos al carrito de compras
+3. Procede al checkout y proporciona información de envío
+4. Completa el pedido
+5. Puede ver el historial de sus pedidos
 
-- **Configuración de servidor web**: Nginx/Apache con Gunicorn/uWSGI
-- **Seguridad**: Deshabilitar DEBUG, configurar ALLOWED_HOSTS
-- **Base de datos**: Optimizar configuración de PostgreSQL
-- **Archivos estáticos**: Configurar almacenamiento y servicio adecuados
-- **Backups**: Implementar estrategia de copias de seguridad
+### Flujo de administración
+
+1. Los administradores y empleados pueden ver todos los pedidos
+2. Pueden actualizar el estado de los pedidos
+3. Pueden gestionar el inventario de productos
+4. Los administradores pueden crear/editar/eliminar productos y categorías
+
+## Personalización del sistema
+
+El sistema puede personalizarse de varias maneras:
+
+### Temas visuales
+
+El diseño visual se basa en Bootstrap 5 y puede personalizarse editando los archivos CSS en el directorio `static/css/`.
+
+### Configuración del sistema
+
+Las principales opciones de configuración se encuentran en:
+- `cofeshop/settings.py`: Configuración general de Django
+- `.env`: Variables de entorno sensibles (no incluir en control de versiones)
+
+## Mantenimiento y operaciones
+
+### Respaldo de base de datos
+
+Para crear un respaldo de la base de datos:
+
+```bash
+python manage.py dumpdata > backup.json
+```
+
+Para restaurar:
+
+```bash
+python manage.py loaddata backup.json
+```
+
+### Actualización del sistema
+
+Para actualizar el sistema:
+
+1. Obtener los últimos cambios del repositorio
+2. Actualizar dependencias: `pip install -r requirements.txt`
+3. Aplicar migraciones: `python manage.py migrate`
+4. Reiniciar el servidor
+
+## Preguntas frecuentes
+
+### ¿Cómo agregar un nuevo administrador?
+
+Puede crear un nuevo administrador desde la línea de comandos:
+
+```bash
+python manage.py createsuperuser
+```
+
+O registrar un usuario normal y luego cambiar su tipo a "admin" desde el panel de administración.
+
+### ¿Cómo cambiar la configuración de correo?
+
+Las configuraciones de correo electrónico se encuentran en `cofeshop/settings.py`. Modifique las variables EMAIL_* según sus necesidades.
+
+### ¿Cómo regenerar un token de autenticación?
+
+Si necesita invalidar un token existente y generar uno nuevo:
+
+```python
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+user = User.objects.get(username='usuario')
+Token.objects.filter(user=user).delete()
+new_token = Token.objects.create(user=user)
+print(f"Nuevo token: {new_token.key}")
+```
+
+También puede hacerlo desde el shell de Django:
+
+```bash
+python manage.py shell
+```
+
+```python
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+user = User.objects.get(username='usuario')
+Token.objects.filter(user=user).delete()
+new_token = Token.objects.create(user=user)
+print(f"Nuevo token: {new_token.key}")
+```

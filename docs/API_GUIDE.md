@@ -8,7 +8,30 @@ La API de CoffeeShop sigue los principios RESTful y utiliza el framework Django.
 
 ## Autenticación
 
-Para acceder a los endpoints protegidos, es necesario estar autenticado. La autenticación se realiza mediante sesiones de Django.
+### Autenticación Web
+
+Para acceder a los endpoints protegidos desde la aplicación web, es necesario estar autenticado. La autenticación se realiza mediante sesiones de Django.
+
+### Autenticación de API
+
+Para integraciones con otros sistemas, se proporciona autenticación mediante tokens. Para obtener un token:
+
+```
+GET/POST /api/login/
+```
+
+**Métodos disponibles:**
+- **POST**: Enviar credenciales en el cuerpo de la solicitud
+- **GET**: Enviar credenciales como parámetros de consulta
+
+Para usar el token, incluirlo en el encabezado de las solicitudes:
+```
+Authorization: Token tu_token_de_autenticación
+```
+
+## API REST
+
+La API REST está disponible bajo el prefijo `/api/`. Para más detalles sobre los endpoints REST, consulte la [Guía de API REST](API_GUIDE_REST.md).
 
 ## Endpoints Disponibles
 
@@ -37,6 +60,19 @@ POST /manage/inventory/add-stock/
 **Respuesta:**
 Redirección a la página de gestión de inventario con mensaje de confirmación
 
+```
+POST /manage/orders/{order_id}/inventory/
+```
+
+**Parámetros:**
+- `order_id`: ID de la orden
+- `action`: 'add' o 'remove'
+- `product_id`: ID del producto
+- `quantity`: Cantidad a modificar
+
+**Respuesta:**
+Redirección a la página de detalle de orden con mensaje de confirmación
+
 ### Usuarios
 
 #### Registro de Usuarios
@@ -55,56 +91,18 @@ POST /register/
 **Respuesta:**
 Redirección a la página principal tras registro exitoso
 
-### Carrito de Compras
-
-#### Añadir Producto
+#### Inicio de Sesión
 
 ```
-POST /cart/add/<product_id>/
-```
-
-**Requisitos:**
-- Autenticación como cliente
-
-**Respuesta:**
-Redirección al carrito
-
-#### Ver Carrito
-
-```
-GET /cart/view/
-```
-
-**Requisitos:**
-- Autenticación como cliente
-
-**Respuesta:**
-Página HTML con los productos en el carrito
-
-#### Eliminar Producto
-
-```
-POST /cart/remove/<product_id>/
-```
-
-**Requisitos:**
-- Autenticación como cliente
-
-**Respuesta:**
-Redirección al carrito
-
-```
-POST /manage/orders/{order_id}/inventory/
+POST /login/
 ```
 
 **Parámetros:**
-- `order_id`: ID de la orden
-- `action`: 'add' o 'remove'
-- `product_id`: ID del producto
-- `quantity`: Cantidad a modificar
+- `username`: Nombre de usuario
+- `password`: Contraseña
 
 **Respuesta:**
-Redirección a la página de detalle de orden con mensaje de confirmación
+Redirección a la página principal tras inicio de sesión exitoso o mensaje de error
 
 ### Productos
 
@@ -243,6 +241,8 @@ Página HTML con la lista de pedidos del usuario.
 La API utiliza los siguientes códigos de estado HTTP:
 
 - `200 OK`: La solicitud se ha completado correctamente
+- `201 Created`: El recurso se ha creado correctamente
+- `204 No Content`: La solicitud se completó pero no hay contenido para devolver
 - `302 Found`: Redirección a otra página
 - `400 Bad Request`: La solicitud contiene datos inválidos
 - `401 Unauthorized`: Es necesario autenticarse
@@ -250,52 +250,46 @@ La API utiliza los siguientes códigos de estado HTTP:
 - `404 Not Found`: El recurso solicitado no existe
 - `500 Internal Server Error`: Error interno del servidor
 
-## Ejemplos de Uso
+## Integración con Sistemas Externos
 
-### Ejemplo 1: Buscar productos por término
+Para integrar la tienda con sistemas externos, se recomienda utilizar la API REST. Para más detalles, consulte la [Guía de API REST](API_GUIDE_REST.md).
 
+### Ejemplo de Autenticación con Python
+
+```python
+import requests
+import json
+
+# Credenciales de usuario
+credentials = {
+    "username": "admin",
+    "password": "adminpassword"
+}
+
+# Solicitar token de autenticación
+response = requests.post('http://127.0.0.1:8000/api/login/', 
+                        json=credentials)
+
+# Imprimir respuesta
+print(f'Código de Estado: {response.status_code}')
+print(json.dumps(response.json(), indent=2))
+
+# Guardar token para uso posterior
+token = response.json()['token']
+print(f'Token: {token}')
+
+# Ejemplo de uso del token en una solicitud
+headers = {
+    'Authorization': f'Token {token}'
+}
+
+# Solicitar lista de productos con el token
+products_response = requests.get('http://127.0.0.1:8000/api/products/', 
+                               headers=headers)
+
+print(f'Código de Estado de Productos: {products_response.status_code}')
+print(json.dumps(products_response.json(), indent=2))
 ```
-GET /products/?q=café
-```
-
-Muestra todos los productos que contienen "café" en su nombre o descripción.
-
-### Ejemplo 2: Filtrar productos por categoría
-
-```
-GET /category/1/
-```
-
-Muestra todos los productos de la categoría con ID 1 (Café).
-
-### Ejemplo 3: Añadir un producto al carrito
-
-```
-GET /add/2/
-```
-
-Añade el producto con ID 2 (Café Etíope) al carrito del usuario autenticado.
-
-## Consideraciones para Integración
-
-Si deseas integrar con la API de CoffeeShop, ten en cuenta las siguientes consideraciones:
-
-1. La API actual está diseñada principalmente para la aplicación web, por lo que devuelve HTML en lugar de JSON/XML.
-2. Para integraciones más avanzadas, se recomienda implementar una API REST dedicada utilizando Django REST Framework.
-3. Las rutas pueden cambiar en futuras versiones, por lo que se recomienda verificar la documentación actualizada.
-
-## API REST
-
-Además de los endpoints tradicionales, CoffeeShop ahora ofrece una API REST completa implementada con Django REST Framework. Todos los endpoints de la API REST están disponibles bajo el prefijo `/api/`.
-
-Para obtener información detallada sobre los endpoints de la API REST, consulte el documento [API_GUIDE_REST.md](API_GUIDE_REST.md).
-
-### Endpoints Principales de la API REST
-
-- `/api/categories/` - Gestión de categorías
-- `/api/products/` - Gestión de productos
-- `/api/carts/` - Gestión de carritos de compra
-- `/api/orders/` - Gestión de pedidos
 
 ## Desarrollo Futuro
 

@@ -8,7 +8,56 @@ La API REST de CoffeeShop está implementada utilizando Django REST Framework y 
 
 ## Autenticación
 
-Para acceder a los endpoints protegidos, es necesario estar autenticado. La API utiliza autenticación basada en sesiones de Django. En futuras versiones, se implementará autenticación mediante tokens.
+La API proporciona varios métodos de autenticación:
+
+### Autenticación por Token
+
+Para acceder a los endpoints protegidos, se puede utilizar autenticación por token. Para obtener un token:
+
+```
+GET/POST /api/login/
+```
+
+**Métodos disponibles:**
+- **POST**: Enviar credenciales en el cuerpo de la solicitud
+- **GET**: Enviar credenciales como parámetros de consulta
+
+**POST Request:**
+```json
+{
+  "username": "usuario",
+  "password": "contraseña"
+}
+```
+
+**GET Request:**
+```
+/api/login/?username=usuario&password=contraseña
+```
+
+**Respuesta:**
+```json
+{
+  "token": "tu_token_de_autenticación"
+}
+```
+
+**Uso del token:**
+Incluir el token en el encabezado de las solicitudes:
+```
+Authorization: Token tu_token_de_autenticación
+```
+
+### Autenticación por Sesión
+
+También se admite la autenticación por sesión de Django para aplicaciones web que utilizan la API.
+
+## Permisos
+
+La API implementa varios niveles de permisos:
+
+- **IsAdminOrReadOnly**: Permite acceso de lectura a todos los usuarios, pero solo administradores pueden crear, actualizar o eliminar recursos.
+- **IsOwnerOrAdmin**: Permite a los usuarios acceder solo a sus propios recursos, mientras que los administradores pueden acceder a todos.
 
 ## Endpoints Disponibles
 
@@ -79,6 +128,41 @@ POST /api/categories/
 }
 ```
 
+```
+PUT /api/categories/{id}/
+```
+
+**Requisitos:**
+- Autenticación como administrador
+
+**Datos:**
+```json
+{
+  "name": "Postres Gourmet",
+  "description": "Postres gourmet para acompañar el café"
+}
+```
+
+**Respuesta:**
+```json
+{
+  "id": 3,
+  "name": "Postres Gourmet",
+  "description": "Postres gourmet para acompañar el café",
+  "created_at": "2023-06-10T14:25:00Z"
+}
+```
+
+```
+DELETE /api/categories/{id}/
+```
+
+**Requisitos:**
+- Autenticación como administrador
+
+**Respuesta:**
+- Código 204 (No Content) si se elimina correctamente
+
 ### Productos
 
 ```
@@ -107,6 +191,7 @@ GET /api/products/
       "created_at": "2023-05-15T10:30:00Z"
     },
     "image": "/media/products/cafe_colombiano.jpg",
+    "image_url": "/media/products/cafe_colombiano.jpg",
     "stock": 50,
     "available": true,
     "created_at": "2023-05-15T11:00:00Z",
@@ -135,12 +220,111 @@ GET /api/products/{id}/
     "created_at": "2023-05-15T10:30:00Z"
   },
   "image": "/media/products/cafe_colombiano.jpg",
+  "image_url": "/media/products/cafe_colombiano.jpg",
   "stock": 50,
   "available": true,
   "created_at": "2023-05-15T11:00:00Z",
   "updated_at": "2023-05-15T11:00:00Z"
 }
 ```
+
+```
+POST /api/products/
+```
+
+**Requisitos:**
+- Autenticación como administrador
+
+**Datos:**
+```json
+{
+  "name": "Té Verde Matcha",
+  "description": "Té verde japonés premium en polvo para ceremonias",
+  "price": "18.50",
+  "category_id": 4,
+  "image": "http://127.0.0.1:8000/media/products/te_verde.jpg",
+  "stock": 40,
+  "available": true
+}
+```
+
+**Notas sobre campos especiales:**
+- `image`: Puede ser un archivo o una URL. Si es una URL, el sistema la procesará para guardar la referencia correcta.
+- `category_id`: ID de la categoría a la que pertenece el producto
+
+**Respuesta:**
+```json
+{
+  "id": 10,
+  "name": "Té Verde Matcha",
+  "description": "Té verde japonés premium en polvo para ceremonias",
+  "price": "18.50",
+  "category": {
+    "id": 4,
+    "name": "Tés",
+    "description": "Variedades de té",
+    "created_at": "2023-05-15T10:32:00Z"
+  },
+  "image": "/media/products/te_verde.jpg",
+  "image_url": "/media/products/te_verde.jpg",
+  "stock": 40,
+  "available": true,
+  "created_at": "2023-06-10T15:00:00Z",
+  "updated_at": "2023-06-10T15:00:00Z"
+}
+```
+
+```
+PUT /api/products/{id}/
+```
+
+**Requisitos:**
+- Autenticación como administrador
+
+**Datos:**
+```json
+{
+  "name": "Té Verde Matcha Premium",
+  "description": "Té verde japonés premium en polvo para ceremonias tradicionales",
+  "price": "22.50",
+  "category_id": 4,
+  "image": "http://127.0.0.1:8000/media/products/te_verde_premium.jpg",
+  "stock": 30,
+  "available": true
+}
+```
+
+**Respuesta:**
+```json
+{
+  "id": 10,
+  "name": "Té Verde Matcha Premium",
+  "description": "Té verde japonés premium en polvo para ceremonias tradicionales",
+  "price": "22.50",
+  "category": {
+    "id": 4,
+    "name": "Tés",
+    "description": "Variedades de té",
+    "created_at": "2023-05-15T10:32:00Z"
+  },
+  "image": "/media/products/te_verde_premium.jpg",
+  "image_url": "/media/products/te_verde_premium.jpg",
+  "stock": 30,
+  "available": true,
+  "created_at": "2023-06-10T15:00:00Z",
+  "updated_at": "2023-06-10T15:05:00Z"
+}
+```
+
+```
+DELETE /api/products/{id}/
+```
+
+**Requisitos:**
+- Autenticación como administrador
+
+**Respuesta:**
+- Código 204 (No Content) si se elimina correctamente
 
 ### Carrito de Compras
 
@@ -173,6 +357,7 @@ GET /api/carts/my_cart/
           "created_at": "2023-05-15T10:30:00Z"
         },
         "image": "/media/products/cafe_colombiano.jpg",
+        "image_url": "/media/products/cafe_colombiano.jpg",
         "stock": 50,
         "available": true,
         "created_at": "2023-05-15T11:00:00Z",
@@ -231,7 +416,7 @@ GET /api/orders/
 
 **Requisitos:**
 - Autenticación como cliente (ve solo sus pedidos)
-- Autenticación como administrador (ve todos los pedidos)
+- Autenticación como administrador o empleado (ve todos los pedidos)
 
 **Descripción:** Obtiene la lista de pedidos según el tipo de usuario.
 
@@ -251,12 +436,12 @@ GET /api/orders/
     },
     "full_name": "Cliente Ejemplo",
     "email": "cliente@example.com",
-    "address": "Calle Principal 123, Ciudad",
+    "address": "Calle Principal 123",
     "phone": "123456789",
     "total_amount": "25.98",
     "status": "pending",
     "status_display": "Pendiente",
-    "notes": null,
+    "notes": "",
     "items": [
       {
         "id": 1,
@@ -272,6 +457,7 @@ GET /api/orders/
             "created_at": "2023-05-15T10:30:00Z"
           },
           "image": "/media/products/cafe_colombiano.jpg",
+          "image_url": "/media/products/cafe_colombiano.jpg",
           "stock": 50,
           "available": true,
           "created_at": "2023-05-15T11:00:00Z",
@@ -288,6 +474,19 @@ GET /api/orders/
 ```
 
 ```
+GET /api/orders/{id}/
+```
+
+**Requisitos:**
+- Autenticación como cliente (solo su pedido)
+- Autenticación como administrador o empleado (cualquier pedido)
+
+**Descripción:** Obtiene los detalles de un pedido específico.
+
+**Respuesta:**
+Misma estructura que en el ejemplo anterior, pero para un pedido específico.
+
+```
 POST /api/orders/checkout/
 ```
 
@@ -300,13 +499,61 @@ POST /api/orders/checkout/
 {
   "full_name": "Cliente Ejemplo",
   "email": "cliente@example.com",
-  "address": "Calle Principal 123, Ciudad",
+  "address": "Calle Principal 123",
   "phone": "123456789"
 }
 ```
 
 **Respuesta:**
-El pedido creado con los detalles completos.
+```json
+{
+  "id": 1,
+  "user": {
+    "id": 2,
+    "username": "cliente1",
+    "email": "cliente1@example.com",
+    "user_type": "customer",
+    "phone": "123456789",
+    "address": "Calle Principal 123",
+    "city": "Ciudad"
+  },
+  "full_name": "Cliente Ejemplo",
+  "email": "cliente@example.com",
+  "address": "Calle Principal 123",
+  "phone": "123456789",
+  "total_amount": "25.98",
+  "status": "pending",
+  "status_display": "Pendiente",
+  "notes": "",
+  "items": [
+    {
+      "id": 1,
+      "product": {
+        "id": 1,
+        "name": "Café Colombiano",
+        "description": "Café de origen colombiano",
+        "price": "12.99",
+        "category": {
+          "id": 1,
+          "name": "Café",
+          "description": "Diferentes tipos de café",
+          "created_at": "2023-05-15T10:30:00Z"
+        },
+        "image": "/media/products/cafe_colombiano.jpg",
+        "image_url": "/media/products/cafe_colombiano.jpg",
+        "stock": 50,
+        "available": true,
+        "created_at": "2023-05-15T11:00:00Z",
+        "updated_at": "2023-05-15T11:00:00Z"
+      },
+      "price": "12.99",
+      "quantity": 2
+    }
+  ],
+  "created_at": "2023-06-10T16:00:00Z",
+  "updated_at": "2023-06-10T16:00:00Z"
+}
+```
 
 ```
 POST /api/orders/{id}/update_status/
@@ -318,12 +565,61 @@ POST /api/orders/{id}/update_status/
 **Datos:**
 ```json
 {
-  "status": "processing"
+  "status": "processing",
+  "notes": "Pedido en preparación"
 }
 ```
 
 **Respuesta:**
-El pedido actualizado con el nuevo estado.
+```json
+{
+  "id": 1,
+  "user": {
+    "id": 2,
+    "username": "cliente1",
+    "email": "cliente1@example.com",
+    "user_type": "customer",
+    "phone": "123456789",
+    "address": "Calle Principal 123",
+    "city": "Ciudad"
+  },
+  "full_name": "Cliente Ejemplo",
+  "email": "cliente@example.com",
+  "address": "Calle Principal 123",
+  "phone": "123456789",
+  "total_amount": "25.98",
+  "status": "processing",
+  "status_display": "En Proceso",
+  "notes": "Pedido en preparación",
+  "items": [
+    {
+      "id": 1,
+      "product": {
+        "id": 1,
+        "name": "Café Colombiano",
+        "description": "Café de origen colombiano",
+        "price": "12.99",
+        "category": {
+          "id": 1,
+          "name": "Café",
+          "description": "Diferentes tipos de café",
+          "created_at": "2023-05-15T10:30:00Z"
+        },
+        "image": "/media/products/cafe_colombiano.jpg",
+        "image_url": "/media/products/cafe_colombiano.jpg",
+        "stock": 50,
+        "available": true,
+        "created_at": "2023-05-15T11:00:00Z",
+        "updated_at": "2023-05-15T11:00:00Z"
+      },
+      "price": "12.99",
+      "quantity": 2
+    }
+  ],
+  "created_at": "2023-06-10T16:00:00Z",
+  "updated_at": "2023-06-10T16:10:00Z"
+}
+```
 
 ## Códigos de Estado HTTP
 
@@ -331,6 +627,7 @@ La API utiliza los siguientes códigos de estado HTTP:
 
 - `200 OK`: La solicitud se ha completado correctamente
 - `201 Created`: El recurso se ha creado correctamente
+- `204 No Content`: La solicitud se completó pero no hay contenido para devolver
 - `400 Bad Request`: La solicitud contiene datos inválidos
 - `401 Unauthorized`: Es necesario autenticarse
 - `403 Forbidden`: No se tienen permisos para acceder al recurso
@@ -339,37 +636,73 @@ La API utiliza los siguientes códigos de estado HTTP:
 
 ## Ejemplos de Uso
 
-### Ejemplo 1: Buscar productos por término
+### Crear un producto usando scripts
 
-```
-GET /api/products/?q=café
-```
+Este es un ejemplo de cómo crear un producto usando Python y la biblioteca requests:
 
-Devuelve todos los productos que contienen "café" en su nombre o descripción.
+```python
+import requests
+import json
 
-### Ejemplo 2: Filtrar productos por categoría
-
-```
-GET /api/products/?category_id=1
-```
-
-Devuelve todos los productos de la categoría con ID 1 (Café).
-
-### Ejemplo 3: Añadir un producto al carrito
-
-```
-POST /api/carts/add_item/
-```
-
-Con los siguientes datos:
-```json
-{
-  "product_id": 2,
-  "quantity": 1
+# Data para el nuevo producto
+product_data = {
+    "name": "Té Verde Matcha",
+    "description": "Té verde japonés premium en polvo para ceremonias",
+    "price": "18.50",
+    "category_id": 4,
+    "image": "http://127.0.0.1:8000/media/products/te_verde.jpg",
+    "stock": 40,
+    "available": True
 }
+
+# Realizar la solicitud API para crear el producto
+response = requests.post('http://127.0.0.1:8000/api/products/', 
+                        json=product_data)
+
+# Imprimir los resultados
+print(f'Código de Estado de Creación del Producto: {response.status_code}')
+try:
+    print(json.dumps(response.json(), indent=2))
+except:
+    print(response.text) 
 ```
 
-Añade el producto con ID 2 (Café Etíope) al carrito del usuario autenticado.
+### Obtener un token de autenticación
+
+```python
+import requests
+import json
+
+# Credenciales de usuario
+credentials = {
+    "username": "admin",
+    "password": "adminpassword"
+}
+
+# Solicitar token de autenticación
+response = requests.post('http://127.0.0.1:8000/api/login/', 
+                        json=credentials)
+
+# Imprimir respuesta
+print(f'Código de Estado: {response.status_code}')
+print(json.dumps(response.json(), indent=2))
+
+# Guardar token para uso posterior
+token = response.json()['token']
+print(f'Token: {token}')
+
+# Ejemplo de uso del token en una solicitud
+headers = {
+    'Authorization': f'Token {token}'
+}
+
+# Solicitar lista de pedidos con el token
+orders_response = requests.get('http://127.0.0.1:8000/api/orders/', 
+                              headers=headers)
+
+print(f'Código de Estado de Pedidos: {orders_response.status_code}')
+print(json.dumps(orders_response.json(), indent=2))
+```
 
 ## Consideraciones para Integración
 
