@@ -1,13 +1,52 @@
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework import viewsets, permissions, status, renderers
+from rest_framework.decorators import action, api_view, renderer_classes
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer, BrowsableAPIRenderer
+from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponse
 
 from shop.models import Category, Product, Order, OrderItem, Cart, CartItem, User
 from .serializers import (
     CategorySerializer, ProductSerializer, OrderSerializer, 
     OrderItemSerializer, CartSerializer, CartItemSerializer, UserSerializer
 )
+
+# Usar la vista ObtainAuthToken para login y obtención de token
+class LoginView(ObtainAuthToken):
+    renderer_classes = [JSONRenderer]
+    permission_classes = []  # Allow unauthenticated access
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return JsonResponse({'token': token.key})
+    
+    def get(self, request, *args, **kwargs):
+        # For GET method, try basic authentication or get credentials from query parameters
+        username = request.query_params.get('username')
+        password = request.query_params.get('password')
+        
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user:
+                token, created = Token.objects.get_or_create(user=user)
+                return JsonResponse({'token': token.key})
+        
+        # If already authenticated via session
+        if request.user.is_authenticated:
+            token, created = Token.objects.get_or_create(user=request.user)
+            return JsonResponse({'token': token.key})
+            
+        # If authentication fails
+        return JsonResponse({'error': 'Authentication required'}, status=401)
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     """Permiso personalizado que permite acceso de lectura a todos,
@@ -38,6 +77,22 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAdminOrReadOnly]
+    
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(available=True)
@@ -63,6 +118,11 @@ class ProductViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(available=(available.lower() == 'true'))
         
         return queryset
+        
+    def get_serializer_context(self):
+        """Add request to serializer context."""
+        context = super().get_serializer_context()
+        return context
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartSerializer

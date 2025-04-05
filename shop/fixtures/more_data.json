@@ -1,0 +1,164 @@
+[
+    {
+      "model": "shop.category",
+      "pk": 4,
+      "fields": {
+        "name": "Té",
+        "description": "Variedades premium de té de diferentes regiones",
+        "created_at": "2023-06-01T10:20:00Z"
+      }
+    },
+    {
+      "model": "shop.category",
+      "pk": 5,
+      "fields": {
+        "name": "Bebidas Frías",
+        "description": "Refrescantes bebidas para días calurosos",
+        "created_at": "2023-06-01T10:25:00Z"
+      }
+    },
+    {
+      "model": "shop.category",
+      "pk": 6,
+      "fields": {
+        "name": "Merchandising",
+        "description": "Productos brandeados de la cafetería",
+        "created_at": "2023-06-01T10:30:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 8,
+      "fields": {
+        "name": "Té Verde Matcha",
+        "description": "Té verde japonés premium en polvo para ceremonias",
+        "price": "18.50",
+        "category": 4,
+        "image": "products/te_verde.jpg",
+        "stock": 40,
+        "available": true,
+        "created_at": "2023-06-03T09:00:00Z",
+        "updated_at": "2023-06-03T09:00:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 9,
+      "fields": {
+        "name": "Té Negro Earl Grey",
+        "description": "Mezcla clásica con esencia de bergamota",
+        "price": "9.99",
+        "category": 4,
+        "image": "products/te_negro.jpg",
+        "stock": 35,
+        "available": true,
+        "created_at": "2023-06-03T09:15:00Z",
+        "updated_at": "2023-06-03T09:15:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 10,
+      "fields": {
+        "name": "Cold Brew Tropical",
+        "description": "Café frío infusionado con notas de mango y maracuyá",
+        "price": "6.75",
+        "category": 5,
+        "image": "products/cold_brew.jpg",
+        "stock": 30,
+        "available": true,
+        "created_at": "2023-06-03T10:00:00Z",
+        "updated_at": "2023-06-03T10:00:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 11,
+      "fields": {
+        "name": "Frappé de Vainilla",
+        "description": "Bebida mezclada con hielo y sirope de vainilla artesanal",
+        "price": "7.25",
+        "category": 5,
+        "image": "products/frappe.jpg",
+        "stock": 25,
+        "available": true,
+        "created_at": "2023-06-03T10:15:00Z",
+        "updated_at": "2023-06-03T10:15:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 12,
+      "fields": {
+        "name": "Taza Cerámica Premium",
+        "description": "Taza de cerámica con diseño exclusivo y doble pared",
+        "price": "15.99",
+        "category": 6,
+        "image": "products/taza.jpg",
+        "stock": 50,
+        "available": true,
+        "created_at": "2023-06-03T11:00:00Z",
+        "updated_at": "2023-06-03T11:00:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 13,
+      "fields": {
+        "name": "Pack Café + Molinillo",
+        "description": "Set especial con café colombiano y molinillo manual",
+        "price": "32.99",
+        "category": 6,
+        "image": "products/pack_combo.jpg",
+        "stock": 15,
+        "available": true,
+        "created_at": "2023-06-03T11:30:00Z",
+        "updated_at": "2023-06-03T11:30:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 14,
+      "fields": {
+        "name": "Croissant de Almendra",
+        "description": "Crujiente croissant relleno de crema de almendras",
+        "price": "4.25",
+        "category": 2,
+        "image": "products/croissant.jpg",
+        "stock": 18,
+        "available": true,
+        "created_at": "2023-06-03T12:00:00Z",
+        "updated_at": "2023-06-03T12:00:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 15,
+      "fields": {
+        "name": "Café Jamaica Blue Mountain",
+        "description": "Uno de los cafés más exclusivos del mundo, con cuerpo suave y balanceado",
+        "price": "39.99",
+        "category": 1,
+        "image": "products/blue_mountain.jpg",
+        "stock": 10,
+        "available": true,
+        "created_at": "2023-06-03T12:15:00Z",
+        "updated_at": "2023-06-03T12:15:00Z"
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 16,
+      "fields": {
+        "name": "Termo Acero Inoxidable",
+        "description": "Termo de 500ml para mantener bebidas calientes por 12 horas",
+        "price": "29.99",
+        "category": 3,
+        "image": "products/termo.jpg",
+        "stock": 20,
+        "available": true,
+        "created_at": "2023-06-03T13:00:00Z",
+        "updated_at": "2023-06-03T13:00:00Z"
+      }
+    }
+  ]
