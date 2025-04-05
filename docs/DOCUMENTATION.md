@@ -87,6 +87,80 @@ cofeshop/
   - `price`: Precio al momento de la compra
   - `quantity`: Cantidad
 
+## Panel Administrativo Personalizado
+
+El sistema incluye un panel administrativo personalizado, disponible en `/manage/`, que proporciona una interfaz adaptada a las necesidades específicas de la tienda de café.
+
+### Acceso al Panel Administrativo
+
+El panel administrativo es accesible solo para usuarios con tipo 'admin' o 'employee'. El endpoint de autenticación es:
+
+```
+GET/POST /manage/login/
+```
+
+**Descripción:** Página de inicio de sesión para el panel administrativo. 
+
+**Métodos disponibles:**
+- **GET**: Muestra el formulario de inicio de sesión
+- **POST**: Procesa las credenciales enviadas
+
+**Parámetros (POST):**
+- `username`: Nombre de usuario
+- `password`: Contraseña
+
+**Respuesta (POST exitoso):**
+Redirección a `/manage/dashboard/` si las credenciales son válidas y el usuario tiene permisos adecuados
+
+**Notas de seguridad:**
+- Esta ruta implementa limitación de intentos para prevenir ataques de fuerza bruta
+- La sesión expira después de 30 minutos de inactividad
+- Las contraseñas se transmiten de forma segura mediante HTTPS (en producción)
+
+### Secciones del Panel Administrativo
+
+El panel administrativo incluye las siguientes secciones principales:
+
+- **Dashboard** (`/manage/dashboard/`): Proporciona una visión general del negocio, incluyendo:
+  - Resumen de ventas
+  - Pedidos recientes
+  - Estado del inventario
+  - Gráficos y estadísticas
+
+- **Gestión de Inventario** (`/manage/inventory/`): Permite:
+  - Ver el inventario actual
+  - Añadir/reducir stock de productos
+  - Recibir alertas de stock bajo
+  - Registrar movimientos de inventario
+
+- **Gestión de Pedidos** (`/manage/orders/`): Permite:
+  - Ver todos los pedidos
+  - Filtrar por estado
+  - Actualizar el estado de los pedidos
+  - Ver detalles completos de cada pedido
+
+- **Gestión de Productos** (`/manage/products/`): Permite:
+  - Crear nuevos productos
+  - Editar productos existentes
+  - Gestionar categorías
+  - Activar/desactivar productos
+
+- **Informes** (`/manage/reports/`): Proporciona:
+  - Informes de ventas por período
+  - Productos más vendidos
+  - Análisis de clientes
+  - Exportación a formatos CSV/Excel
+
+### Diferencias con el Panel de Admin de Django
+
+A diferencia del panel de administración predeterminado de Django (`/admin/`), el panel personalizado (`/manage/`):
+
+1. Está diseñado específicamente para operaciones de la tienda de café
+2. Tiene una interfaz más amigable y adaptada al flujo de trabajo del negocio
+3. Incorpora estadísticas y métricas relevantes
+4. Está restringido a funcionalidades específicas del negocio
+5. Tiene un diseño visual coherente con la marca
+
 ## API REST
 
 La aplicación incluye una API REST completa que permite integrar CoffeeShop con otros sistemas o desarrollar aplicaciones móviles. La API está implementada utilizando Django REST Framework.

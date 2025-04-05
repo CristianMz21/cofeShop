@@ -117,7 +117,16 @@ La aplicación incluye varios usuarios predefinidos para pruebas:
 - `/cart/`: Carrito de compras
 - `/checkout/`: Proceso de pago
 - `/orders/`: Historial de pedidos
-- `/admin/`: Panel de administración
+- `/admin/`: Panel de administración Django predeterminado
+
+### Panel Administrativo
+
+- `/manage/login/`: Inicio de sesión para el panel administrativo personalizado
+  - Accesible solo para usuarios tipo 'admin' o 'employee'
+  - Redirecciona a `/manage/dashboard/` tras inicio de sesión exitoso
+- `/manage/dashboard/`: Panel principal de administración
+- `/manage/inventory/`: Gestión de inventario
+- `/manage/orders/`: Gestión de pedidos
 
 ### API REST
 
@@ -177,6 +186,8 @@ Accede al panel de administración en http://127.0.0.1:8000/admin/ con las crede
 - Productos
 - Pedidos
 - Carritos de compra
+
+Además, existe un panel administrativo personalizado disponible en http://127.0.0.1:8000/manage/, que ofrece una interfaz más adaptada a las necesidades específicas de la tienda.
 
 ## Desarrollo
 

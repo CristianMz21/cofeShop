@@ -37,6 +37,41 @@ La API REST está disponible bajo el prefijo `/api/`. Para más detalles sobre l
 
 ### Administración
 
+#### Inicio de Sesión del Panel Administrativo
+
+```
+GET/POST /manage/login/
+```
+
+**Descripción:** Página de inicio de sesión para el panel administrativo. Solo accesible para usuarios con tipo 'admin' o 'employee'.
+
+**Métodos disponibles:**
+- **GET**: Muestra el formulario de inicio de sesión
+- **POST**: Procesa las credenciales enviadas
+
+**Parámetros (POST):**
+- `username`: Nombre de usuario
+- `password`: Contraseña
+
+**Respuesta (GET):**
+Página HTML con el formulario de inicio de sesión
+
+**Respuesta (POST exitoso):**
+Redirección a `/manage/dashboard/` si las credenciales son válidas y el usuario tiene permisos adecuados
+
+**Respuesta (POST fallido):**
+Página de inicio de sesión con mensaje de error
+
+**Códigos de estado:**
+- `200 OK`: Formulario de inicio de sesión o error de autenticación
+- `302 Found`: Redirección tras inicio de sesión exitoso
+- `403 Forbidden`: Si un usuario sin permisos intenta acceder
+
+**Notas de seguridad:**
+- Esta ruta implementa limitación de intentos para prevenir ataques de fuerza bruta
+- La sesión expira después de 30 minutos de inactividad
+- Las contraseñas se transmiten de forma segura mediante HTTPS (en producción)
+
 #### Gestión de Inventario
 
 ```
